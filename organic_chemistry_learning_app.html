@@ -1,0 +1,1679 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ორგანული ქიმია - ალკანები & კონსტრუქტორი</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for Georgian (Noto Sans Georgian & Fira Code) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500;700&family=Noto+Sans+Georgian:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Noto Sans Georgian', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace']
+                    },
+                    colors: {
+                        chem: {
+                            carbon: '#1e293b',
+                            hydrogen: '#38bdf8',
+                            bond: '#94a3b8',
+                            accent: '#10b981',
+                            amber: '#f59e0b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Noto Sans Georgian', sans-serif;
+            background-color: #f8fafc;
+        }
+        .nav-tab.active {
+            border-bottom: 3px solid #2563eb;
+            color: #1e40af;
+            font-weight: 700;
+            background-color: #eff6ff;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .atom-pulse {
+            animation: pulse-ring 2s infinite;
+        }
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        .palette-btn.active {
+            box-shadow: 0 0 0 3px #38bdf8, 0 4px 12px rgba(0,0,0,0.25);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="text-slate-800 bg-slate-50 min-h-screen flex flex-col justify-between">
+
+    <!-- Top Navigation Header -->
+    <header class="bg-slate-900 text-white shadow-xl sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-indigo-600 p-2.5 rounded-xl text-emerald-400 shadow-md">
+                        <i class="fa-solid fa-flask-vial text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg sm:text-xl font-bold leading-tight tracking-wide">ორგანული ქიმია: ალკანები & ჰალოგენალკანები</h1>
+                        <p class="text-xs text-indigo-300">ინტერაქტიული სასწავლო პლატფორმა & კონსტრუქტორი</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-3 text-xs bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span class="text-slate-300 font-medium">ალკილის რადიკალები & ჰალოგენები</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Curriculum Module Tabs -->
+        <div class="bg-white border-b border-slate-200 text-slate-600 text-xs sm:text-sm font-medium overflow-x-auto shadow-sm">
+            <div class="max-w-7xl mx-auto flex whitespace-nowrap px-2">
+                <button onclick="openTab('m1')" id="tab-m1" class="nav-tab active px-4 py-3 flex items-center gap-2 transition hover:text-indigo-600">
+                    <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 text-xs flex items-center justify-center font-bold">1</span>
+                    ვალენტობა
+                </button>
+                <button onclick="openTab('m2')" id="tab-m2" class="nav-tab px-4 py-3 flex items-center gap-2 transition hover:text-indigo-600">
+                    <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 text-xs flex items-center justify-center font-bold">2</span>
+                    ჩონჩხი
+                </button>
+                <button onclick="openTab('m3')" id="tab-m3" class="nav-tab px-4 py-3 flex items-center gap-2 transition hover:text-indigo-600">
+                    <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 text-xs flex items-center justify-center font-bold">3</span>
+                    წყალბადები
+                </button>
+                <button onclick="openTab('m4')" id="tab-m4" class="nav-tab px-4 py-3 flex items-center gap-2 transition hover:text-indigo-600">
+                    <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 text-xs flex items-center justify-center font-bold">4</span>
+                    ალკანები
+                </button>
+                <button onclick="openTab('m5')" id="tab-m5" class="nav-tab px-4 py-3 flex items-center gap-2 transition hover:text-indigo-600">
+                    <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 text-xs flex items-center justify-center font-bold">5</span>
+                    იზომერია (C1-C10)
+                </button>
+                <button onclick="openTab('m6')" id="tab-m6" class="nav-tab px-4 py-3 flex items-center gap-2 transition hover:text-indigo-600">
+                    <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 text-xs flex items-center justify-center font-bold">6</span>
+                    ნომენკლატურა
+                </button>
+                <button onclick="openTab('m7')" id="tab-m7" class="nav-tab px-4 py-3 flex items-center gap-2 transition hover:text-indigo-600 bg-emerald-50 text-emerald-800 font-bold">
+                    <i class="fa-solid fa-atom text-emerald-600"></i>
+                    7. ლაბორატორია & ქვიზი
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
+
+        <!-- MODULE 1: CARBON VALENCE -->
+        <section id="m1" class="tab-page space-y-6">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200">
+                <div class="border-b border-slate-100 pb-4 mb-6">
+                    <span class="text-xs uppercase tracking-wider font-semibold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-md">საფეხური 1</span>
+                    <h2 class="text-2xl font-bold text-slate-800 mt-2">ნახშირბადის ვალენტობა ორგანულ ნაერთებში</h2>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div class="space-y-4 text-slate-600 leading-relaxed">
+                        <p class="text-base">
+                            ორგანულ ქიმიაში <strong>ნახშირბადის (C) ატომი ყოველთვის ოთხვალენტიანია (IV)</strong>. ეს ნიშნავს, რომ ნახშირბადს შეუძლია წარმოქმნას ზუსტად <strong>4 კოვალენტური ბმა</strong>.
+                        </p>
+                        <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl text-amber-900 text-sm">
+                            <p class="font-bold mb-1"><i class="fa-solid fa-key text-amber-600 mr-1"></i> მთავარი წესი:</p>
+                            ორგანული მოლეკულის წერისას ყოველ ნახშირბადს გარშემო ზუსტად 4 ბმის ხაზი უნდა ჰქონდეს.
+                        </div>
+                        <p class="text-sm">
+                            წყალბადი (H) და ჰალოგენები (F, Cl, Br, I) არიან <strong>ერთვალენტიანები (I)</strong> და ქმნიან მხოლოდ 1 ბმას.
+                        </p>
+                    </div>
+
+                    <!-- Interactive Methane 2D Model -->
+                    <div class="bg-slate-900 p-8 rounded-2xl text-center shadow-inner flex flex-col items-center justify-center">
+                        <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-6">მეთანის (CH₄) სტრუქტურა</h3>
+                        <div class="relative w-52 h-52 flex items-center justify-center">
+                            <!-- Carbon Core -->
+                            <div class="w-16 h-16 bg-slate-800 text-emerald-400 font-extrabold text-2xl rounded-full flex items-center justify-center border-4 border-emerald-500 z-10 shadow-lg atom-pulse">
+                                C
+                            </div>
+                            <!-- Top H -->
+                            <div class="absolute top-0 flex flex-col items-center">
+                                <div class="w-9 h-9 rounded-full bg-blue-500 text-white font-bold flex items-center justify-center text-sm shadow">H</div>
+                                <div class="w-1 h-7 bg-slate-500 my-0.5"></div>
+                            </div>
+                            <!-- Bottom H -->
+                            <div class="absolute bottom-0 flex flex-col items-center">
+                                <div class="w-1 h-7 bg-slate-500 my-0.5"></div>
+                                <div class="w-9 h-9 rounded-full bg-blue-500 text-white font-bold flex items-center justify-center text-sm shadow">H</div>
+                            </div>
+                            <!-- Left H -->
+                            <div class="absolute left-0 flex items-center">
+                                <div class="w-9 h-9 rounded-full bg-blue-500 text-white font-bold flex items-center justify-center text-sm shadow">H</div>
+                                <div class="h-1 w-7 bg-slate-500 mx-0.5"></div>
+                            </div>
+                            <!-- Right H -->
+                            <div class="absolute right-0 flex items-center">
+                                <div class="h-1 w-7 bg-slate-500 mx-0.5"></div>
+                                <div class="w-9 h-9 rounded-full bg-blue-500 text-white font-bold flex items-center justify-center text-sm shadow">H</div>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-6">4 კოვალენტური ბმა C და H ატომებს შორის</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 2: SKELETON TYPES -->
+        <section id="m2" class="tab-page hidden space-y-6">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200">
+                <div class="border-b border-slate-100 pb-4 mb-6">
+                    <span class="text-xs uppercase tracking-wider font-semibold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-md">საფეხური 2</span>
+                    <h2 class="text-2xl font-bold text-slate-800 mt-2">ნახშირბადოვანი ჩონჩხის ტიპები</h2>
+                </div>
+
+                <p class="text-slate-600 mb-6 leading-relaxed">
+                    ნახშირბადის ატომებს აქვთ უნიკალური თვისება — დაუკავშირდნენ ერთმანეთს და წარმოქმნან სხვადასხვა ფორმის ჯაჭვები:
+                </p>
+
+                <div class="grid md:grid-cols-3 gap-6">
+                    <!-- Type 1: Linear -->
+                    <div class="border border-slate-200 rounded-xl p-5 bg-slate-50 hover:bg-white hover:shadow-md transition">
+                        <div class="flex items-center gap-2 mb-3 text-indigo-600 font-bold">
+                            <i class="fa-solid fa-arrows-left-right text-lg"></i>
+                            <h3>1. წრფივი (ხაზოვანი)</h3>
+                        </div>
+                        <p class="text-xs text-slate-600 mb-4">ნახშირბადის ატომები მიმდევრობითაა დაკავშირებული ერთ უწყვეტ ჯაჭვად.</p>
+                        <div class="bg-slate-900 text-white p-4 rounded-lg flex justify-center items-center space-x-2 font-mono font-bold text-lg">
+                            <span>C</span><span class="text-indigo-400">—</span>
+                            <span>C</span><span class="text-indigo-400">—</span>
+                            <span>C</span><span class="text-indigo-400">—</span>
+                            <span>C</span>
+                        </div>
+                    </div>
+
+                    <!-- Type 2: Branched -->
+                    <div class="border border-slate-200 rounded-xl p-5 bg-slate-50 hover:bg-white hover:shadow-md transition">
+                        <div class="flex items-center gap-2 mb-3 text-indigo-600 font-bold">
+                            <i class="fa-solid fa-code-branch text-lg"></i>
+                            <h3>2. განშტოებული</h3>
+                        </div>
+                        <p class="text-xs text-slate-600 mb-4">მთავარ ჯაჭვს გვერდიდან ებმის სხვა ნახშირბადოვანი ჯგუფი (განშტოება).</p>
+                        <div class="bg-slate-900 text-white p-4 rounded-lg flex flex-col items-center font-mono font-bold text-lg">
+                            <div class="flex items-center space-x-2">
+                                <span>C</span><span class="text-indigo-400">—</span>
+                                <span class="text-amber-400 font-extrabold">C</span><span class="text-indigo-400">—</span>
+                                <span>C</span>
+                            </div>
+                            <div class="text-indigo-400 text-sm my-0.5">|</div>
+                            <div class="text-amber-400 font-extrabold">C</div>
+                        </div>
+                    </div>
+
+                    <!-- Type 3: Cyclic -->
+                    <div class="border border-slate-200 rounded-xl p-5 bg-slate-50 hover:bg-white hover:shadow-md transition">
+                        <div class="flex items-center gap-2 mb-3 text-indigo-600 font-bold">
+                            <i class="fa-solid fa-circle-notch text-lg"></i>
+                            <h3>3. ციკლური</h3>
+                        </div>
+                        <p class="text-xs text-slate-600 mb-4">ნახშირბადის ატომები შეკრულია ჩაკეტილ რგოლად (ციკლად).</p>
+                        <div class="bg-slate-900 text-white p-4 rounded-lg flex justify-center items-center font-mono font-bold text-lg">
+                            <div class="grid grid-cols-2 gap-3 text-center border-2 border-dashed border-indigo-500/50 p-2 rounded-lg">
+                                <span>C</span><span>C</span>
+                                <span>C</span><span>C</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 3: HYDROGEN FILLING -->
+        <section id="m3" class="tab-page hidden space-y-6">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200">
+                <div class="border-b border-slate-100 pb-4 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <div>
+                        <span class="text-xs uppercase tracking-wider font-semibold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-md">საფეხური 3</span>
+                        <h2 class="text-2xl font-bold text-slate-800 mt-2">ჩონჩხის შევსება წყალბადის ატომებით</h2>
+                    </div>
+                    <!-- Molecule Selector Chips -->
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <button onclick="setHExample('ethane')" id="hex-ethane" class="hex-btn px-3 py-1.5 rounded-lg border font-bold transition bg-white text-slate-700">ეთანი (C₂H₆)</button>
+                        <button onclick="setHExample('propane')" id="hex-propane" class="hex-btn px-3 py-1.5 rounded-lg border font-bold transition bg-indigo-600 text-white shadow">პროპანი (C₃H₈)</button>
+                        <button onclick="setHExample('butane')" id="hex-butane" class="hex-btn px-3 py-1.5 rounded-lg border font-bold transition bg-white text-slate-700">ბუტანი (C₄H₁₀)</button>
+                        <button onclick="setHExample('isobutane')" id="hex-isobutane" class="hex-btn px-3 py-1.5 rounded-lg border font-bold transition bg-white text-slate-700">2-მეთილპროპანი</button>
+                    </div>
+                </div>
+
+                <p class="text-slate-600 mb-4 leading-relaxed">
+                    ჩონჩხის აგების შემდეგ, თითოეულ C ატომს 4-მდე დანაკლისი ბმები უვსება <strong>წყალბადის (H) ატომებით</strong>.
+                </p>
+
+                <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-5 mb-6">
+                    <h3 class="font-bold text-indigo-900 text-sm mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-calculator"></i> წყალბადების დაანგარიშების წესი:
+                    </h3>
+                    <ul class="grid sm:grid-cols-2 gap-3 text-xs sm:text-sm text-indigo-950 font-medium">
+                        <li class="bg-white p-2.5 rounded-lg border border-indigo-100 flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                            <span><strong>კიდურა C (1 ბმა):</strong> 4 - 1 = <strong>3 H (—CH₃)</strong></span>
+                        </li>
+                        <li class="bg-white p-2.5 rounded-lg border border-indigo-100 flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                            <span><strong>შუა C (2 ბმა):</strong> 4 - 2 = <strong>2 H (—CH₂—)</strong></span>
+                        </li>
+                        <li class="bg-white p-2.5 rounded-lg border border-indigo-100 flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                            <span><strong>განშტოების C (3 ბმა):</strong> 4 - 3 = <strong>1 H (>CH—)</strong></span>
+                        </li>
+                        <li class="bg-white p-2.5 rounded-lg border border-indigo-100 flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                            <span><strong>ოთხმაგი C (4 ბმა):</strong> 4 - 4 = <strong>0 H (>C<)</strong></span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Dynamic Hydrogens Visualizer Box -->
+                <div class="bg-slate-900 p-6 rounded-2xl text-white shadow-xl">
+                    <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-800">
+                        <div>
+                            <h4 id="h-vis-title" class="text-xs font-semibold text-slate-300 uppercase tracking-wider">პროპანის მაგალითი (C₃H₈)</h4>
+                            <p id="h-vis-desc" class="text-[11px] text-emerald-400 mt-0.5">შუა ნახშირბადს (C₂) აქვს ზუსტად 2 წყალბადი (CH₂)</p>
+                        </div>
+                        <button onclick="toggleHVisualizer()" id="h-toggle-btn" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-4 py-2 rounded-lg font-bold transition shadow-md flex items-center gap-2">
+                            <i class="fa-solid fa-atom"></i> <span id="h-toggle-txt">წყალბადების შევსება</span>
+                        </button>
+                    </div>
+
+                    <div id="h-vis-container" class="flex justify-center items-center py-8 min-h-[200px] overflow-x-auto">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 4: ALKANES FORMULAS -->
+        <section id="m4" class="tab-page hidden space-y-6">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200">
+                <div class="border-b border-slate-100 pb-4 mb-6">
+                    <span class="text-xs uppercase tracking-wider font-semibold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-md">საფეხური 4</span>
+                    <h2 class="text-2xl font-bold text-slate-800 mt-2">ალკანები და ფორმულების ტიპები</h2>
+                </div>
+
+                <div class="space-y-6">
+                    <p class="text-slate-600 leading-relaxed">
+                        <strong>ალკანები</strong> (ნაგერი ნახშირწყალბადები) არის ნაერთები, სადაც ნახშირბადის ატომები დაკავშირებულია მხოლოდ <strong>მარტივი (ერთმაგი) ბმებით</strong>.
+                    </p>
+
+                    <div class="bg-indigo-900 text-white p-6 rounded-2xl text-center shadow-md">
+                        <span class="text-xs text-indigo-300 font-semibold uppercase tracking-widest">ალკანების ზოგადი ფორმულა</span>
+                        <div class="text-4xl font-extrabold text-emerald-400 font-mono my-2">C<sub>n</sub>H<sub>2n+2</sub></div>
+                        <p class="text-xs text-slate-300">სადაც <b>n</b> არის ნახშირბადის ატომების რაოდენობა (1, 2, 3...)</p>
+                    </div>
+
+                    <h3 class="text-lg font-bold text-slate-800 mt-6">ფორმულების გამოსახვის 3 ფორმა (პროპანის C₃H₈ მაგალითზე):</h3>
+
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <!-- 1. Molecular -->
+                        <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl flex flex-col justify-between">
+                            <div>
+                                <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider">1. მოლეკულური ფორმულა</span>
+                                <div class="text-2xl font-extrabold font-mono text-slate-800 my-4 text-center">C₃H₈</div>
+                            </div>
+                            <p class="text-xs text-slate-500 leading-relaxed">გვიჩვენებს თითოეული ელემენტის ატომების საერთო რაოდენობას მოლეკულაში.</p>
+                        </div>
+
+                        <!-- 2. Extended Structural -->
+                        <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl flex flex-col justify-between">
+                            <div>
+                                <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider">2. გავრცობილი სტრუქტურული</span>
+                                
+                                <div class="my-3 bg-white p-3 rounded-lg border border-slate-200 flex justify-center items-center shadow-inner">
+                                    <div class="inline-flex items-center font-mono font-bold text-sm text-slate-800 select-none">
+                                        <!-- C1 Column -->
+                                        <div class="flex flex-col items-center">
+                                            <span class="text-blue-500">H</span>
+                                            <span class="text-slate-400 text-xs">|</span>
+                                            <div class="flex items-center">
+                                                <span class="text-blue-500 mr-0.5">H</span>
+                                                <span class="text-slate-400">—</span>
+                                                <span class="text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">C</span>
+                                            </div>
+                                            <span class="text-slate-400 text-xs">|</span>
+                                            <span class="text-blue-500">H</span>
+                                        </div>
+
+                                        <span class="text-slate-400 mx-1">—</span>
+
+                                        <!-- C2 Column -->
+                                        <div class="flex flex-col items-center">
+                                            <span class="text-blue-500">H</span>
+                                            <span class="text-slate-400 text-xs">|</span>
+                                            <span class="text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">C</span>
+                                            <span class="text-slate-400 text-xs">|</span>
+                                            <span class="text-blue-500">H</span>
+                                        </div>
+
+                                        <span class="text-slate-400 mx-1">—</span>
+
+                                        <!-- C3 Column -->
+                                        <div class="flex flex-col items-center">
+                                            <span class="text-blue-500">H</span>
+                                            <span class="text-slate-400 text-xs">|</span>
+                                            <div class="flex items-center">
+                                                <span class="text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">C</span>
+                                                <span class="text-slate-400">—</span>
+                                                <span class="text-blue-500 ml-0.5">H</span>
+                                            </div>
+                                            <span class="text-slate-400 text-xs">|</span>
+                                            <span class="text-blue-500">H</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-500 leading-relaxed">გვიჩვენებს ატომების ურთიერთდაკავშირების თანმიმდევრობასა და აბსოლუტურად ყველა კოვალენტურ ბმას.</p>
+                        </div>
+
+                        <!-- 3. Condensed Structural -->
+                        <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl flex flex-col justify-between">
+                            <div>
+                                <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider">3. შეკვეცილი სტრუქტურული</span>
+                                <div class="text-base font-bold font-mono text-indigo-900 my-4 bg-white p-3 rounded-lg border border-slate-200 text-center shadow-inner">
+                                    CH₃ — CH₂ — CH₃
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-500 leading-relaxed">აერთიანებს წყალბადის ატომებს შესაბამის ნახშირბადთან და გამოხატავს მხოლოდ C—C ბმებს.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 5: ISOMERISM (C1 - C10) -->
+        <section id="m5" class="tab-page hidden space-y-6">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200">
+                <div class="border-b border-slate-100 pb-4 mb-6">
+                    <span class="text-xs uppercase tracking-wider font-semibold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-md">საფეხური 5</span>
+                    <h2 class="text-2xl font-bold text-slate-800 mt-2">სტრუქტურული იზომერია (C1 — C10)</h2>
+                </div>
+
+                <p class="text-slate-600 mb-6 leading-relaxed">
+                    <strong>იზომერები</strong> ეწოდება ნაერთებს, რომელთაც აქვთ <strong>ერთნაირი მოლეკულური ფორმულა</strong>, მაგრამ <strong>განსხვავებული სტრუქტურა</strong> და თვისებები.
+                </p>
+
+                <div class="grid lg:grid-cols-3 gap-6">
+                    <!-- Alkane List C1-C10 -->
+                    <div class="lg:col-span-1 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <h3 class="font-bold text-slate-800 text-sm mb-3">ალკანების იზომერები:</h3>
+                        <div class="space-y-1.5 text-xs sm:text-sm max-h-[440px] overflow-y-auto pr-1">
+                            <button onclick="loadIsomers(1)" id="iso-btn-1" class="iso-btn w-full text-left px-3 py-2 rounded-lg flex justify-between items-center transition bg-white border">
+                                <span>1. მეთანი (CH₄)</span>
+                                <span class="bg-slate-200 px-2 py-0.5 rounded text-xs font-bold">1</span>
+                            </button>
+                            <button onclick="loadIsomers(2)" id="iso-btn-2" class="iso-btn w-full text-left px-3 py-2 rounded-lg flex justify-between items-center transition bg-white border">
+                                <span>2. ეთანი (C₂H₆)</span>
+                                <span class="bg-slate-200 px-2 py-0.5 rounded text-xs font-bold">1</span>
+                            </button>
+                            <button onclick="loadIsomers(3)" id="iso-btn-3" class="iso-btn w-full text-left px-3 py-2 rounded-lg flex justify-between items-center transition bg-white border">
+                                <span>3. პროპანი (C₃H₈)</span>
+                                <span class="bg-slate-200 px-2 py-0.5 rounded text-xs font-bold">1</span>
+                            </button>
+                            <button onclick="loadIsomers(4)" id="iso-btn-4" class="iso-btn w-full text-left px-3 py-2 rounded-lg flex justify-between items-center transition bg-indigo-600 text-white font-bold border border-indigo-600">
+                                <span>4. ბუტანი (C₄H₁₀)</span>
+                                <span class="bg-indigo-800 px-2 py-0.5 rounded text-xs">2 იზომერი</span>
+                            </button>
+                            <button onclick="loadIsomers(5)" id="iso-btn-5" class="iso-btn w-full text-left px-3 py-2 rounded-lg flex justify-between items-center transition bg-white border">
+                                <span>5. პენტანი (C₅H₁₂)</span>
+                                <span class="bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded text-xs">3 იზომერი</span>
+                            </button>
+                            <button onclick="loadIsomers(6)" id="iso-btn-6" class="iso-btn w-full text-left px-3 py-2 rounded-lg flex justify-between items-center transition bg-white border">
+                                <span>6. ჰექსანი (C₆H₁₄)</span>
+                                <span class="bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded text-xs">5 იზომერი</span>
+                            </button>
+                            <button onclick="loadIsomers(7)" id="iso-btn-7" class="iso-btn w-full text-left px-3 py-2 rounded-lg flex justify-between items-center transition bg-white border">
+                                <span>7. ჰეპტანი (C₇H₁₆)</span>
+                                <span class="bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded text-xs">9 იზომერი</span>
+                            </button>
+                            <button onclick="loadIsomers(8)" id="iso-btn-8" class="iso-btn w-full text-left px-3 py-2 rounded-lg flex justify-between items-center transition bg-white border">
+                                <span>8. ოქტანი (C₈H₁₈)</span>
+                                <span class="bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded text-xs">18 იზომერი</span>
+                            </button>
+                            <button onclick="loadIsomers(9)" id="iso-btn-9" class="iso-btn w-full text-left px-3 py-2 rounded-lg flex justify-between items-center transition bg-white border">
+                                <span>9. ნონანი (C₉H₂₀)</span>
+                                <span class="bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded text-xs">35 იზომერი</span>
+                            </button>
+                            <button onclick="loadIsomers(10)" id="iso-btn-10" class="iso-btn w-full text-left px-3 py-2 rounded-lg flex justify-between items-center transition bg-white border">
+                                <span>10. დეკანი (C₁₀H₂₂)</span>
+                                <span class="bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded text-xs">75 იზომერი</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Isomer Details Display -->
+                    <div class="lg:col-span-2 border border-slate-200 rounded-xl p-5 bg-white flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                                <div>
+                                    <h3 id="iso-view-title" class="font-bold text-lg text-slate-800">ბუტანი (C₄H₁₀)</h3>
+                                    <p id="iso-view-subtitle" class="text-xs text-slate-500">2 სტრუქტურული იზომერი</p>
+                                </div>
+                                <span id="iso-view-badge" class="bg-indigo-100 text-indigo-800 font-bold text-xs px-3 py-1 rounded-full">
+                                    2 იზომერი
+                                </span>
+                            </div>
+
+                            <div id="iso-cards-container" class="space-y-3">
+                                <!-- Rendered dynamically -->
+                            </div>
+                        </div>
+
+                        <div class="mt-4 p-3 bg-slate-50 rounded-lg border text-xs text-slate-500 flex items-center gap-2">
+                            <i class="fa-solid fa-lightbulb text-amber-500 text-sm"></i>
+                            <span>ნახშირბადების მატებასთან ერთად იზომერების რაოდენობა ექსპონენციალურად იზრდება.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 6: NOMENCLATURE WITH HALOGENS & ETHYL EXAMPLES -->
+        <section id="m6" class="tab-page hidden space-y-6">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200">
+                <div class="border-b border-slate-100 pb-4 mb-6">
+                    <span class="text-xs uppercase tracking-wider font-semibold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-md">საფეხური 6</span>
+                    <h2 class="text-2xl font-bold text-slate-800 mt-2">IUPAC საერთაშორისო ნომენკლატურა</h2>
+                </div>
+
+                <div class="grid md:grid-cols-4 gap-4 mb-6">
+                    <div class="border border-slate-200 rounded-xl p-4 bg-slate-50 flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center shrink-0">1</div>
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-sm">უგრძესი ჯაჭვი</h4>
+                            <p class="text-xs text-slate-600 mt-1">იპოვეთ C ატომების ყველაზე გრძელი უწყვეტი ჯაჭვი.</p>
+                        </div>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-xl p-4 bg-slate-50 flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center shrink-0">2</div>
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-sm">დანომვრა</h4>
+                            <p class="text-xs text-slate-600 mt-1">დანომრეთ ჯაჭვი იმ ბოლოდან, სადაც უფრო ახლოსაა ჩამნაცვლებელი.</p>
+                        </div>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-xl p-4 bg-slate-50 flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center shrink-0">3</div>
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-sm">ჩამნაცვლებლები</h4>
+                            <p class="text-xs text-slate-600 mt-1">მიუთითეთ ნომერი და სახელი (მაგ. ბრომ-, ქლორ-, მეთილ-, ეთილ-).</p>
+                        </div>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-xl p-4 bg-slate-50 flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center shrink-0">4</div>
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-sm">ძირითადი სახელი</h4>
+                            <p class="text-xs text-slate-600 mt-1">ბოლოს მიაწერეთ მთავარი ჯაჭვის ალკანის სახელი (მაგ. ...პენტანი).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- IUPAC Example Showcase with Switcher & Perfect Alignment -->
+                <div class="bg-slate-900 text-white p-6 sm:p-8 rounded-2xl shadow-xl">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-800 pb-4 mb-6">
+                        <div>
+                            <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">IUPAC ნიმუშების განხილვა</h3>
+                            <p class="text-sm text-slate-300">ალკილის რადიკალები (-CH₃, -C₂H₅) და ჰალოგენები (-Cl, -Br, -F, -I):</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2 text-xs">
+                            <button onclick="setNomenclatureExample(0)" id="nom-btn-0" class="nom-tab-btn px-3 py-1.5 rounded-lg font-bold border transition bg-indigo-600 text-white border-indigo-500 shadow">2-მეთილბუტანი</button>
+                            <button onclick="setNomenclatureExample(1)" id="nom-btn-1" class="nom-tab-btn px-3 py-1.5 rounded-lg font-bold border transition bg-slate-800 text-slate-300 border-slate-700">3-ეთილპენტანი</button>
+                            <button onclick="setNomenclatureExample(2)" id="nom-btn-2" class="nom-tab-btn px-3 py-1.5 rounded-lg font-bold border transition bg-slate-800 text-slate-300 border-slate-700">2-ქლორპროპანი</button>
+                            <button onclick="setNomenclatureExample(3)" id="nom-btn-3" class="nom-tab-btn px-3 py-1.5 rounded-lg font-bold border transition bg-slate-800 text-slate-300 border-slate-700">2-ბრომ-2-მეთილპროპანი</button>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-8 items-center">
+                        <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 flex justify-center items-center min-h-[190px] shadow-inner" id="nom-struct-box">
+                            <!-- Injected dynamically -->
+                        </div>
+
+                        <div class="space-y-3" id="nom-details-box">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Student Practice Challenge for Nomenclature -->
+                <div class="mt-8 bg-gradient-to-br from-indigo-50 to-slate-100 p-6 rounded-2xl border border-indigo-100 shadow-sm">
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-pen-nib"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-base">სავარჯიშო: დაასახელეთ ნაერთი დამოუკიდებლად</h3>
+                            <p class="text-xs text-slate-500">გამოიცანით მოცემული სტრუქტურის IUPAC სახელი (მეთილი, ეთილი ან ჰალოგენები):</p>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6 items-center mt-4">
+                        <div class="bg-slate-900 text-white p-5 rounded-xl flex justify-center items-center shadow" id="practice-struct-canvas">
+                            <!-- Injected by JS -->
+                        </div>
+
+                        <div class="space-y-3">
+                            <label class="text-xs font-semibold text-slate-700 block">აირჩიეთ სწორი IUPAC დასახელება:</label>
+                            <div class="grid grid-cols-1 gap-2" id="practice-options-box"></div>
+                            <div id="practice-feedback" class="text-xs p-3 rounded-lg hidden font-bold"></div>
+                            <div class="flex gap-2 pt-2">
+                                <button onclick="nextPracticeTask()" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-2 rounded-lg font-bold transition flex items-center gap-1">
+                                    <i class="fa-solid fa-shuffle"></i> სხვა სავარჯიშო
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 7: INTERACTIVE BUILDER LAB WITH ETHYL & HALOGENS -->
+        <section id="m7" class="tab-page hidden space-y-6">
+            
+            <!-- Sub Navigation Buttons -->
+            <div class="flex space-x-2 border-b border-slate-200 pb-2">
+                <button onclick="toggleLabMode('builder')" id="sub-builder-btn" class="px-4 py-2 text-xs sm:text-sm font-bold rounded-lg bg-indigo-600 text-white shadow">
+                    <i class="fa-solid fa-cubes mr-1.5"></i> მოლეკულების კონსტრუქტორი
+                </button>
+                <button onclick="toggleLabMode('quiz')" id="sub-quiz-btn" class="px-4 py-2 text-xs sm:text-sm font-bold rounded-lg bg-slate-200 text-slate-700 hover:bg-slate-300">
+                    <i class="fa-solid fa-graduation-cap mr-1.5"></i> ცოდნის შემოწმება (ქვიზი - 12 კითხვა)
+                </button>
+            </div>
+
+            <!-- MOLECULAR BUILDER AREA WITH FULL SUBSTITUENT PALETTE -->
+            <div id="lab-builder" class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200">
+                <div class="border-b pb-4 mb-4 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800">ინტერაქტიული მოლეკულური ლაბორატორია</h2>
+                        <p class="text-xs text-slate-500">აირჩიეთ ჩამნაცვლებელი ქვედა პალიტრიდან და დააწკაპუნეთ ნებისმიერ ნახშირბადზე</p>
+                    </div>
+
+                    <!-- Carbon Chain Add/Remove Controls -->
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="addMainCarbon()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-2 rounded-lg font-bold transition flex items-center gap-1 shadow-sm">
+                            <i class="fa-solid fa-plus"></i> + C ჯაჭვში
+                        </button>
+                        <button onclick="removeMainCarbon()" class="bg-rose-100 hover:bg-rose-200 text-rose-700 text-xs px-3 py-2 rounded-lg font-bold transition flex items-center gap-1">
+                            <i class="fa-solid fa-minus"></i> - C ჯაჭვში
+                        </button>
+                        <button onclick="resetBuilder()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs px-3 py-2 rounded-lg font-bold transition flex items-center gap-1">
+                            <i class="fa-solid fa-rotate-right"></i> გასუფთავება
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Active Substituent Palette (Alkyls & Halogens) -->
+                <div class="bg-slate-800 p-4 rounded-xl mb-4 border border-slate-700 text-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1">
+                            <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i> აირჩიეთ ჩამნაცვლებელი:
+                        </span>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-2 text-xs font-mono font-bold">
+                        <!-- Methyl -->
+                        <button onclick="selectPalette('CH3')" id="pal-CH3" class="palette-btn active bg-amber-500 hover:bg-amber-400 text-slate-950 px-3 py-1.5 rounded-lg border border-amber-300 transition flex items-center gap-1">
+                            <span>-CH₃</span> <span class="font-sans text-[10px] opacity-80">(მეთილი)</span>
+                        </button>
+                        <!-- Ethyl -->
+                        <button onclick="selectPalette('C2H5')" id="pal-C2H5" class="palette-btn bg-orange-500 hover:bg-orange-400 text-slate-950 px-3 py-1.5 rounded-lg border border-orange-300 transition flex items-center gap-1">
+                            <span>-C₂H₅</span> <span class="font-sans text-[10px] opacity-80">(ეთილი)</span>
+                        </button>
+                        <!-- Chlorine -->
+                        <button onclick="selectPalette('Cl')" id="pal-Cl" class="palette-btn bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-3 py-1.5 rounded-lg border border-emerald-300 transition flex items-center gap-1">
+                            <span>-Cl</span> <span class="font-sans text-[10px] opacity-80">(ქლორი)</span>
+                        </button>
+                        <!-- Bromine -->
+                        <button onclick="selectPalette('Br')" id="pal-Br" class="palette-btn bg-rose-600 hover:bg-rose-500 text-white px-3 py-1.5 rounded-lg border border-rose-400 transition flex items-center gap-1">
+                            <span>-Br</span> <span class="font-sans text-[10px] opacity-80">(ბრომი)</span>
+                        </button>
+                        <!-- Fluorine -->
+                        <button onclick="selectPalette('F')" id="pal-F" class="palette-btn bg-cyan-400 hover:bg-cyan-300 text-slate-950 px-3 py-1.5 rounded-lg border border-cyan-200 transition flex items-center gap-1">
+                            <span>-F</span> <span class="font-sans text-[10px] opacity-80">(ფტორი)</span>
+                        </button>
+                        <!-- Iodine -->
+                        <button onclick="selectPalette('I')" id="pal-I" class="palette-btn bg-purple-500 hover:bg-purple-400 text-white px-3 py-1.5 rounded-lg border border-purple-300 transition flex items-center gap-1">
+                            <span>-I</span> <span class="font-sans text-[10px] opacity-80">(იოდი)</span>
+                        </button>
+                        <!-- Eraser -->
+                        <button onclick="selectPalette('ERASER')" id="pal-ERASER" class="palette-btn bg-slate-700 hover:bg-slate-600 text-rose-300 px-3 py-1.5 rounded-lg border border-slate-600 transition flex items-center gap-1">
+                            <i class="fa-solid fa-eraser"></i> <span class="font-sans text-[10px]">წაშლა</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Molecule Canvas -->
+                <div class="bg-slate-900 rounded-2xl p-6 min-h-[360px] flex flex-col justify-center items-center overflow-x-auto relative shadow-inner">
+                    <div class="text-xs text-slate-400 absolute top-3 left-4">
+                        <i class="fa-solid fa-hand-pointer mr-1"></i> დააწკაპუნეთ <strong>[+]</strong> სლოტებზე ზემოთ ან ქვემოთ არჩეული ჩამნაცვლებლის დასამატებლად
+                    </div>
+
+                    <div id="builder-canvas" class="flex items-center justify-center py-6 min-w-full">
+                        <!-- Injected by JS -->
+                    </div>
+                </div>
+
+                <!-- Realtime Calculations Output -->
+                <div class="mt-6 grid md:grid-cols-3 gap-4">
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+                        <span class="text-xs font-semibold text-slate-500 uppercase">მოლეკულური ფორმულა</span>
+                        <div id="out-mol-formula" class="text-2xl font-extrabold text-indigo-600 font-mono mt-1">C₄H₁₀</div>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+                        <span class="text-xs font-semibold text-slate-500 uppercase">შეკვეცილი ფორმულა</span>
+                        <div id="out-cond-formula" class="text-sm font-bold text-slate-800 font-mono mt-2 overflow-x-auto">CH₃—CH₂—CH₂—CH₃</div>
+                    </div>
+                    <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl">
+                        <span class="text-xs font-semibold text-emerald-600 uppercase">IUPAC დასახელება</span>
+                        <div id="out-iupac-name" class="text-lg font-extrabold text-emerald-800 mt-1">ბუტანი</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EXPANDED QUIZ AREA (12 EXTENSIVE QUESTIONS) -->
+            <div id="lab-quiz" class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 hidden">
+                <div class="border-b pb-4 mb-6 flex justify-between items-center flex-wrap gap-2">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800">ტესტი: შეამოწმეთ ცოდნა ორგანულ ქიმიაში</h2>
+                        <p class="text-xs text-slate-500">12 შეკითხვა ვალენტობის, ფორმულების შედგენის, იზომერიის, ეთილის რადიკალისა და ჰალოგენების ნომენკლატურის შესახებ</p>
+                    </div>
+                    <span class="bg-indigo-100 text-indigo-800 font-bold text-xs px-3 py-1.5 rounded-full">
+                        სულ 12 საკითხი
+                    </span>
+                </div>
+
+                <div id="quiz-container" class="space-y-6 max-w-3xl mx-auto"></div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 mt-10">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p class="font-medium text-slate-300">ინტერაქტიული სასწავლო პლატფორმა ორგანულ ქიმიაში | ალკანები & ჰალოგენალკანები</p>
+            <p class="text-slate-500">მომზადებულია მოსწავლეთათვის და მასწავლებლებისთვის</p>
+        </div>
+    </footer>
+
+    <!-- Interactive Logic Script -->
+    <script>
+        // Tab Handler
+        function openTab(tabId) {
+            document.querySelectorAll('.tab-page').forEach(page => page.classList.add('hidden'));
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+
+            document.getElementById(tabId).classList.remove('hidden');
+            document.getElementById('tab-' + tabId).classList.add('active');
+
+            if (tabId === 'm3') renderHVisualizer();
+            if (tabId === 'm5') loadIsomers(4);
+            if (tabId === 'm6') { setNomenclatureExample(0); nextPracticeTask(); }
+            if (tabId === 'm7') renderBuilder();
+        }
+
+        // Sub Lab Toggle
+        function toggleLabMode(mode) {
+            const bBtn = document.getElementById('sub-builder-btn');
+            const qBtn = document.getElementById('sub-quiz-btn');
+            const bArea = document.getElementById('lab-builder');
+            const qArea = document.getElementById('lab-quiz');
+
+            if (mode === 'builder') {
+                bBtn.className = 'px-4 py-2 text-xs sm:text-sm font-bold rounded-lg bg-indigo-600 text-white shadow';
+                qBtn.className = 'px-4 py-2 text-xs sm:text-sm font-bold rounded-lg bg-slate-200 text-slate-700 hover:bg-slate-300';
+                bArea.classList.remove('hidden');
+                qArea.classList.add('hidden');
+            } else {
+                qBtn.className = 'px-4 py-2 text-xs sm:text-sm font-bold rounded-lg bg-indigo-600 text-white shadow';
+                bBtn.className = 'px-4 py-2 text-xs sm:text-sm font-bold rounded-lg bg-slate-200 text-slate-700 hover:bg-slate-300';
+                qArea.classList.remove('hidden');
+                bArea.classList.add('hidden');
+                initQuiz();
+            }
+        }
+
+        /* ================= MODULE 3: HYDROGEN VISUALIZER ================= */
+        let currentHExample = 'propane';
+        let hFilled = true;
+
+        const hExamplesData = {
+            ethane: {
+                title: 'ეთანის მაგალითი (C₂H₆)',
+                desc: 'ორივე ნახშირბადი კიდურაა (1 C—C ბმა) → თითოეულს აქვს 3 წყალბადი (CH₃—CH₃)',
+                carbons: 2,
+                branches: []
+            },
+            propane: {
+                title: 'პროპანის მაგალითი (C₃H₈)',
+                desc: 'შუა ნახშირბადს (C₂) აქვს 2 C—C ბმა → ემატება ზუსტად 2 წყალბადი (CH₂), სულ 8 H',
+                carbons: 3,
+                branches: []
+            },
+            butane: {
+                title: 'ბუტანის მაგალითი (C₄H₁₀)',
+                desc: 'ორი კიდურა C (3-3 H) და ორი შუა C (2-2 H) → CH₃—CH₂—CH₂—CH₃',
+                carbons: 4,
+                branches: []
+            },
+            isobutane: {
+                title: '2-მეთილპროპანის მაგალითი (C₄H₁₀)',
+                desc: 'ცენტრალურ C-ს აქვს 3 C—C ბმა (მესამეული C) → ემატება მხოლოდ 1 წყალბადი (CH)',
+                carbons: 3,
+                branches: [1]
+            }
+        };
+
+        function setHExample(key) {
+            currentHExample = key;
+            document.querySelectorAll('.hex-btn').forEach(b => {
+                b.className = 'hex-btn px-3 py-1.5 rounded-lg border font-bold transition bg-white text-slate-700';
+            });
+            const activeBtn = document.getElementById('hex-' + key);
+            if (activeBtn) activeBtn.className = 'hex-btn px-3 py-1.5 rounded-lg border font-bold transition bg-indigo-600 text-white shadow';
+
+            const ex = hExamplesData[key];
+            document.getElementById('h-vis-title').textContent = ex.title;
+            document.getElementById('h-vis-desc').textContent = ex.desc;
+            renderHVisualizer();
+        }
+
+        function toggleHVisualizer() {
+            hFilled = !hFilled;
+            const btnTxt = document.getElementById('h-toggle-txt');
+            const btn = document.getElementById('h-toggle-btn');
+            if (hFilled) {
+                btnTxt.textContent = 'წყალბადების მოცილება';
+                btn.className = 'bg-amber-600 hover:bg-amber-500 text-white text-xs px-4 py-2 rounded-lg font-bold transition shadow-md flex items-center gap-2';
+            } else {
+                btnTxt.textContent = 'წყალბადების შევსება';
+                btn.className = 'bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-4 py-2 rounded-lg font-bold transition shadow-md flex items-center gap-2';
+            }
+            renderHVisualizer();
+        }
+
+        function renderHVisualizer() {
+            const container = document.getElementById('h-vis-container');
+            const ex = hExamplesData[currentHExample];
+            const numC = ex.carbons;
+            const hasBranch = ex.branches.includes(1);
+
+            if (!hFilled) {
+                let html = '<div class="flex items-center space-x-2">';
+                for (let i = 0; i < numC; i++) {
+                    html += `
+                        <div class="flex flex-col items-center">
+                            ${(hasBranch && i === 1) ? '<div class="w-10 h-10 rounded-full border-2 border-dashed border-amber-400 bg-amber-950/40 text-amber-300 font-bold flex items-center justify-center font-mono">C</div><div class="w-1 h-4 bg-slate-600"></div>' : ''}
+                            <div class="w-12 h-12 rounded-full border-2 border-slate-600 bg-slate-800 flex items-center justify-center font-bold text-lg text-white font-mono shadow">
+                                C<sub>${i+1}</sub>
+                            </div>
+                        </div>
+                    `;
+                    if (i < numC - 1) {
+                        html += '<div class="w-8 h-1 bg-slate-600 my-auto rounded"></div>';
+                    }
+                }
+                html += '</div>';
+                container.innerHTML = html;
+                return;
+            }
+
+            let html = '<div class="flex items-center space-x-1 font-mono">';
+            for (let i = 0; i < numC; i++) {
+                const isFirst = (i === 0);
+                const isLast = (i === numC - 1);
+                const isBranch = (hasBranch && i === 1);
+
+                html += '<div class="flex flex-col items-center">';
+                
+                if (isBranch) {
+                    html += `
+                        <div class="flex flex-col items-center mb-1">
+                            <span class="text-xs text-amber-300 font-bold">H</span>
+                            <div class="w-0.5 h-2 bg-slate-500"></div>
+                            <div class="flex items-center">
+                                <span class="text-xs text-amber-300 font-bold mr-0.5">H</span>
+                                <span class="text-amber-400 text-xs font-bold bg-amber-950/80 px-1 py-0.5 rounded border border-amber-500/50">C</span>
+                                <span class="text-xs text-amber-300 font-bold ml-0.5">H</span>
+                            </div>
+                            <div class="w-1 h-3 bg-indigo-400 my-0.5"></div>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <span class="text-sm text-sky-400 font-bold">H</span>
+                        <div class="w-0.5 h-3 bg-slate-500 my-0.5"></div>
+                    `;
+                }
+
+                html += '<div class="flex items-center">';
+                if (isFirst) {
+                    html += '<span class="text-sm text-sky-400 font-bold mr-1">H</span><span class="text-slate-500">—</span>';
+                }
+
+                html += `
+                    <div class="w-11 h-11 rounded-full ${isBranch ? 'bg-amber-600 border-2 border-amber-300' : 'bg-slate-800 border-2 border-emerald-400'} flex items-center justify-center font-bold text-white text-base shadow-lg">
+                        C<sub>${i+1}</sub>
+                    </div>
+                `;
+
+                if (isLast) {
+                    html += '<span class="text-slate-500">—</span><span class="text-sm text-sky-400 font-bold ml-1">H</span>';
+                }
+                html += '</div>';
+
+                html += `
+                    <div class="w-0.5 h-3 bg-slate-500 my-0.5"></div>
+                    <span class="text-sm text-sky-400 font-bold">H</span>
+                `;
+
+                html += '</div>';
+
+                if (i < numC - 1) {
+                    html += '<div class="w-6 h-1 bg-slate-500 my-auto rounded"></div>';
+                }
+            }
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        /* ================= MODULE 5: ISOMERS DB ================= */
+        const isomersDb = {
+            1: { name: 'მეთანი', formula: 'CH₄', count: 1, list: [{ name: 'მეთანი', struct: 'CH₄' }] },
+            2: { name: 'ეთანი', formula: 'C₂H₆', count: 1, list: [{ name: 'ეთანი', struct: 'CH₃—CH₃' }] },
+            3: { name: 'პროპანი', formula: 'C₃H₈', count: 1, list: [{ name: 'პროპანი', struct: 'CH₃—CH₂—CH₃' }] },
+            4: {
+                name: 'ბუტანი', formula: 'C₄H₁₀', count: 2,
+                list: [
+                    { name: 'ნ-ბუტანი (ბუტანი)', struct: 'CH₃—CH₂—CH₂—CH₃' },
+                    { name: '2-მეთილპროპანი (იზობუტანი)', struct: 'CH₃—CH(CH₃)—CH₃' }
+                ]
+            },
+            5: {
+                name: 'პენტანი', formula: 'C₅H₁₂', count: 3,
+                list: [
+                    { name: 'ნ-პენტანი (პენტანი)', struct: 'CH₃—CH₂—CH₂—CH₂—CH₃' },
+                    { name: '2-მეთილბუტანი (იზოპენტანი)', struct: 'CH₃—CH(CH₃)—CH₂—CH₃' },
+                    { name: '2,2-დიმეთილპროპანი (ნეოპენტანი)', struct: 'C(CH₃)₄' }
+                ]
+            },
+            6: {
+                name: 'ჰექსანი', formula: 'C₆H₁₄', count: 5,
+                list: [
+                    { name: 'ნ-ჰექსანი', struct: 'CH₃—(CH₂)₄—CH₃' },
+                    { name: '2-მეთილპენტანი', struct: 'CH₃—CH(CH₃)—(CH₂)₂—CH₃' },
+                    { name: '3-მეთილპენტანი', struct: 'CH₃—CH₂—CH(CH₃)—CH₂—CH₃' },
+                    { name: '2,2-დიმეთილბუტანი', struct: 'CH₃—C(CH₃)₂—CH₂—CH₃' },
+                    { name: '2,3-დიმეთილბუტანი', struct: 'CH₃—CH(CH₃)—CH(CH₃)—CH₃' }
+                ]
+            },
+            7: {
+                name: 'ჰეპტანი', formula: 'C₇H₁₆', count: 9,
+                list: [
+                    { name: 'ნ-ჰეპტანი', struct: 'CH₃—(CH₂)₅—CH₃' },
+                    { name: '2-მეთილჰექსანი', struct: 'CH₃—CH(CH₃)—(CH₂)₃—CH₃' },
+                    { name: '3-მეთილჰექსანი', struct: 'CH₃—CH₂—CH(CH₃)—(CH₂)₂—CH₃' },
+                    { name: '2,2-დიმეთილპენტანი', struct: 'CH₃—C(CH₃)₂—(CH₂)₂—CH₃' },
+                    { name: 'სხვა 5 იზომერი...', struct: '3,3-დი-, 2,3-დი-, 2,4-დი-, 3-ეთილპენტანი და 2,2,3-ტრიმეთილბუტანი' }
+                ]
+            },
+            8: { name: 'ოქტანი', formula: 'C₈H₁₈', count: 18, list: [{ name: 'ნ-ოქტანი და 17 განშტოებული იზომერი', struct: 'CH₃—(CH₂)₆—CH₃ და სხვა 17 იზომერი' }] },
+            9: { name: 'ნონანი', formula: 'C₉H₂₀', count: 35, list: [{ name: 'ნ-ნონანი და 34 განშტოებული იზომერი', struct: 'CH₃—(CH₂)₇—CH₃ და სხვა 34 იზომერი' }] },
+            10: { name: 'დეკანი', formula: 'C₁₀H₂₂', count: 75, list: [{ name: 'ნ-დეკანი და 74 განშტოებული იზომერი', struct: 'CH₃—(CH₂)₈—CH₃ და სხვა 74 იზომერი' }] }
+        };
+
+        function loadIsomers(n) {
+            document.querySelectorAll('.iso-btn').forEach(b => {
+                b.className = 'iso-btn w-full text-left px-3 py-2 rounded-lg flex justify-between items-center transition bg-white border';
+            });
+            const active = document.getElementById('iso-btn-' + n);
+            if (active) {
+                active.className = 'iso-btn w-full text-left px-3 py-2 rounded-lg flex justify-between items-center transition bg-indigo-600 text-white font-bold border border-indigo-600';
+            }
+
+            const data = isomersDb[n];
+            document.getElementById('iso-view-title').textContent = `${data.name} (${data.formula})`;
+            document.getElementById('iso-view-subtitle').textContent = `სულ ${data.count} სტრუქტურული იზომერი`;
+            document.getElementById('iso-view-badge').textContent = `${data.count} იზომერი`;
+
+            const container = document.getElementById('iso-cards-container');
+            container.innerHTML = '';
+
+            data.list.forEach((item, idx) => {
+                const card = document.createElement('div');
+                card.className = 'p-3 bg-slate-50 border border-slate-200 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2';
+                card.innerHTML = `
+                    <div>
+                        <span class="text-[10px] font-bold text-indigo-600 uppercase tracking-wider">იზომერი #${idx + 1}</span>
+                        <h4 class="font-bold text-slate-800 text-sm">${item.name}</h4>
+                    </div>
+                    <div class="font-mono bg-white px-3 py-1.5 rounded-lg border border-slate-300 text-slate-800 text-xs font-semibold">
+                        ${item.struct}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        /* ================= MODULE 6: NOMENCLATURE EXAMPLES (ETHYL & HALOGENS INCLUDED) ================= */
+        const nomExamples = [
+            {
+                name: "2-მეთილბუტანი",
+                chain: ["CH₃", "CH", "CH₂", "CH₃"],
+                topBranches: [null, null, null, null],
+                bottomBranches: [null, { label: "CH₃", color: "amber" }, null, null],
+                ruleText: [
+                    "1. უგრძესი ჯაჭვი: 4 ნახშირბადი → <strong>ბუტანი</strong>",
+                    "2. დანომვრა: მარცხნიდან (C₂ უფრო ახლოსაა მეთილთან)",
+                    "3. რადიკალი: C₂-ზე ებმის მეთილი (-CH₃) → <strong>2-მეთილ</strong>",
+                    "4. სრული სახელი: <strong>2-მეთილბუტანი</strong>"
+                ]
+            },
+            {
+                name: "3-ეთილპენტანი",
+                chain: ["CH₃", "CH₂", "CH", "CH₂", "CH₃"],
+                topBranches: [null, null, null, null, null],
+                bottomBranches: [null, null, { label: "C₂H₅", color: "orange" }, null, null],
+                ruleText: [
+                    "1. უგრძესი ჯაჭვი: 5 ნახშირბადი → <strong>პენტანი</strong>",
+                    "2. დანომვრა: ცენტრალურია მე-3 C ატომი",
+                    "3. რადიკალი: C₃-ზე ებმის ეთილის რადიკალი (-C₂H₅) → <strong>3-ეთილ</strong>",
+                    "4. სრული სახელი: <strong>3-ეთილპენტანი</strong>"
+                ]
+            },
+            {
+                name: "2-ქლორპროპანი",
+                chain: ["CH₃", "CH", "CH₃"],
+                topBranches: [null, null, null],
+                bottomBranches: [null, { label: "Cl", color: "emerald" }, null],
+                ruleText: [
+                    "1. უგრძესი ჯაჭვი: 3 ნახშირბადი → <strong>პროპანი</strong>",
+                    "2. ჰალოგენი: მე-2 C ატომზე არის ქლორი (-Cl) → <strong>2-ქლორ</strong>",
+                    "3. ჰალოგენი იკითხება წინ: <strong>2-ქლორპროპანი</strong>",
+                    "4. მოლეკულური ფორმულა: C₃H₇Cl"
+                ]
+            },
+            {
+                name: "2-ბრომ-2-მეთილპროპანი",
+                chain: ["CH₃", "C", "CH₃"],
+                topBranches: [null, { label: "Br", color: "rose" }, null],
+                bottomBranches: [null, { label: "CH₃", color: "amber" }, null],
+                ruleText: [
+                    "1. უგრძესი ჯაჭვი: 3 ნახშირბადი → <strong>პროპანი</strong>",
+                    "2. ჩამნაცვლებლები: C₂-ზე არის ბრომი (-Br) და მეთილი (-CH₃)",
+                    "3. ანბანური/IUPAC რიგით: ბრომი იწერება მეთილამდე → <strong>2-ბრომ-2-მეთილ</strong>",
+                    "4. სრული სახელი: <strong>2-ბრომ-2-მეთილპროპანი</strong>"
+                ]
+            }
+        ];
+
+        function setNomenclatureExample(idx) {
+            document.querySelectorAll('.nom-tab-btn').forEach((btn, i) => {
+                if (i === idx) {
+                    btn.className = 'nom-tab-btn px-3 py-1.5 rounded-lg font-bold border transition bg-indigo-600 text-white border-indigo-500 shadow';
+                } else {
+                    btn.className = 'nom-tab-btn px-3 py-1.5 rounded-lg font-bold border transition bg-slate-800 text-slate-300 border-slate-700';
+                }
+            });
+
+            const ex = nomExamples[idx];
+            const structBox = document.getElementById('nom-struct-box');
+            
+            let colsHtml = '';
+            ex.chain.forEach((cGroup, cIdx) => {
+                const num = cIdx + 1;
+                const topB = ex.topBranches[cIdx];
+                const botB = ex.bottomBranches[cIdx];
+
+                const colorClasses = {
+                    amber: "bg-amber-950/70 border-amber-500/50 text-amber-300",
+                    orange: "bg-orange-950/70 border-orange-500/50 text-orange-300",
+                    emerald: "bg-emerald-950/70 border-emerald-500/50 text-emerald-300",
+                    rose: "bg-rose-950/70 border-rose-500/50 text-rose-300"
+                };
+
+                colsHtml += `
+                    <div class="flex flex-col items-center">
+                        ${topB ? `
+                            <span class="font-mono font-bold text-xs border px-2 py-0.5 rounded shadow ${colorClasses[topB.color]}">${topB.label}</span>
+                            <span class="text-slate-400 font-mono text-xs my-0.5">|</span>
+                        ` : '<div class="h-6"></div>'}
+
+                        <span class="text-[11px] font-bold text-slate-400 mb-1 font-mono">${num}</span>
+
+                        <div class="px-2.5 py-1 rounded-lg font-mono font-bold text-base ${botB || topB ? 'bg-slate-800 border-2 border-indigo-400 text-white' : 'bg-slate-800 border border-slate-700 text-emerald-400'}">
+                            ${cGroup}
+                        </div>
+
+                        ${botB ? `
+                            <span class="text-slate-400 font-mono text-xs my-0.5">|</span>
+                            <span class="font-mono font-bold text-xs border px-2 py-0.5 rounded shadow ${colorClasses[botB.color]}">${botB.label}</span>
+                        ` : '<div class="h-6"></div>'}
+                    </div>
+                `;
+
+                if (cIdx < ex.chain.length - 1) {
+                    colsHtml += `<div class="text-slate-500 font-mono text-lg font-bold mx-1 my-auto self-center select-none">—</div>`;
+                }
+            });
+
+            structBox.innerHTML = `
+                <div class="inline-flex items-center justify-center p-3">
+                    ${colsHtml}
+                </div>
+            `;
+
+            const detailsBox = document.getElementById('nom-details-box');
+            let rulesHtml = ex.ruleText.map(r => `
+                <div class="flex items-center gap-2 text-sm text-slate-300">
+                    <i class="fa-solid fa-circle-check text-emerald-400"></i>
+                    <span>${r}</span>
+                </div>
+            `).join('');
+
+            detailsBox.innerHTML = `
+                <div class="space-y-2.5">
+                    ${rulesHtml}
+                    <div class="mt-4 p-3.5 bg-emerald-950/70 border border-emerald-500/50 rounded-xl text-emerald-300 font-bold text-lg text-center shadow">
+                        IUPAC სახელი: ${ex.name}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Student Nomenclature Practice Generator (with Halogens & Ethyl)
+        const practiceTasks = [
+            {
+                chain: ["CH₃", "CH", "CH₂", "CH₃"],
+                branchIdx: 1,
+                branchName: "Cl",
+                badgeClass: "bg-emerald-500 text-slate-950",
+                correct: "2-ქლორბუტანი",
+                options: ["2-ქლორბუტანი", "3-ქლორბუტანი", "2-ქლორპროპანი", "ქლორბუტანი"]
+            },
+            {
+                chain: ["CH₃", "CH₂", "CH", "CH₂", "CH₃"],
+                branchIdx: 2,
+                branchName: "C₂H₅",
+                badgeClass: "bg-orange-500 text-slate-950",
+                correct: "3-ეთილპენტანი",
+                options: ["3-ეთილპენტანი", "2-ეთილპენტანი", "3-მეთილჰექსანი", "ჰეპტანი"]
+            },
+            {
+                chain: ["CH₃", "CH", "CH₃"],
+                branchIdx: 1,
+                branchName: "Br",
+                badgeClass: "bg-rose-600 text-white",
+                correct: "2-ბრომპროპანი",
+                options: ["2-ბრომპროპანი", "1-ბრომპროპანი", "ბრომეთანი", "2-ბრომბუტანი"]
+            },
+            {
+                chain: ["CH₃", "CH", "CH₂", "CH₂", "CH₃"],
+                branchIdx: 1,
+                branchName: "F",
+                badgeClass: "bg-cyan-400 text-slate-950",
+                correct: "2-ფტორპენტანი",
+                options: ["2-ფტორპენტანი", "4-ფტორპენტანი", "2-ფტორბუტანი", "ფტორჰექსანი"]
+            },
+            {
+                chain: ["CH₃", "CH", "CH", "CH₃"],
+                branchIdx: 1,
+                branchName: "CH₃",
+                badgeClass: "bg-amber-500 text-slate-950",
+                correct: "2,3-დიმეთილბუტანი",
+                options: ["2,3-დიმეთილბუტანი", "2-მეთილბუტანი", "დიიზობუტანი", "ჰექსანი"]
+            }
+        ];
+
+        let currentPracticeIdx = 0;
+
+        function nextPracticeTask() {
+            currentPracticeIdx = (currentPracticeIdx + 1) % practiceTasks.length;
+            const t = practiceTasks[currentPracticeIdx];
+
+            let cols = '';
+            t.chain.forEach((c, i) => {
+                const hasB = (i === t.branchIdx);
+                cols += `
+                    <div class="flex flex-col items-center">
+                        <span class="text-xs font-mono text-slate-400 mb-0.5">${i+1}</span>
+                        <div class="px-2 py-0.5 rounded font-mono font-bold text-sm ${hasB ? 'bg-indigo-900 border border-indigo-400 text-white' : 'bg-slate-800 text-emerald-400'}">${c}</div>
+                        ${hasB ? `<span class="text-indigo-400 text-xs font-mono">|</span><span class="${t.badgeClass} font-mono font-bold text-[11px] px-1.5 py-0.5 rounded shadow">${t.branchName}</span>` : '<div class="h-6"></div>'}
+                    </div>
+                `;
+                if (i < t.chain.length - 1) cols += `<div class="text-slate-500 font-mono mx-1 self-center">—</div>`;
+            });
+
+            document.getElementById('practice-struct-canvas').innerHTML = `<div class="inline-flex items-center">${cols}</div>`;
+
+            const optsBox = document.getElementById('practice-options-box');
+            optsBox.innerHTML = '';
+            t.options.forEach(opt => {
+                const b = document.createElement('button');
+                b.className = 'w-full text-left p-2.5 bg-white hover:bg-indigo-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-800 transition flex items-center justify-between';
+                b.innerHTML = `<span>${opt}</span> <i class="fa-solid fa-chevron-right text-slate-400 text-xs"></i>`;
+                b.onclick = () => checkPracticeAnswer(opt, t.correct);
+                optsBox.appendChild(b);
+            });
+
+            const feed = document.getElementById('practice-feedback');
+            feed.className = 'text-xs p-3 rounded-lg hidden font-bold';
+            feed.textContent = '';
+        }
+
+        function checkPracticeAnswer(selected, correct) {
+            const feed = document.getElementById('practice-feedback');
+            feed.classList.remove('hidden');
+            if (selected === correct) {
+                feed.className = 'text-xs p-3 rounded-lg font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 block';
+                feed.innerHTML = `🎉 სწორია! IUPAC სახელია: <strong>${correct}</strong>.`;
+            } else {
+                feed.className = 'text-xs p-3 rounded-lg font-bold bg-rose-100 text-rose-800 border border-rose-300 block';
+                feed.innerHTML = `❌ არასწორია. სწორი სახელია: <strong>${correct}</strong>.`;
+            }
+        }
+
+        /* ================= MODULE 7: MOLECULAR BUILDER (ALKYLS + HALOGENS) ================= */
+        // Substituents: null, 'CH3', 'C2H5', 'Cl', 'Br', 'F', 'I'
+        let currentPalette = 'CH3';
+
+        function selectPalette(type) {
+            currentPalette = type;
+            document.querySelectorAll('.palette-btn').forEach(btn => btn.classList.remove('active'));
+            const active = document.getElementById('pal-' + type);
+            if (active) active.classList.add('active');
+        }
+
+        let mainChain = [
+            { top: null, bottom: null },
+            { top: null, bottom: null },
+            { top: null, bottom: null },
+            { top: null, bottom: null }
+        ];
+
+        function addMainCarbon() {
+            if (mainChain.length < 8) {
+                mainChain.push({ top: null, bottom: null });
+                renderBuilder();
+            }
+        }
+
+        function removeMainCarbon() {
+            if (mainChain.length > 1) {
+                mainChain.pop();
+                renderBuilder();
+            }
+        }
+
+        function applySubstituent(idx, pos) {
+            const isEnd = (idx === 0 || idx === mainChain.length - 1);
+
+            if (currentPalette === 'ERASER') {
+                mainChain[idx][pos] = null;
+                renderBuilder();
+                return;
+            }
+
+            // Alkyl radicals (CH3, C2H5) are placed on non-terminal carbons to avoid just extending the chain
+            if ((currentPalette === 'CH3' || currentPalette === 'C2H5') && isEnd) {
+                alert("რადიკალები (-CH₃, -C₂H₅) დაამატეთ შუა ნახშირბადებზე, რათა წარმოიქმნას განშტოება! კიდურა ნახშირბადზე შეგიძლიათ დაამატოთ ჰალოგენები (-Cl, -Br, -F, -I).");
+                return;
+            }
+
+            // Toggle or replace
+            if (mainChain[idx][pos] === currentPalette) {
+                mainChain[idx][pos] = null;
+            } else {
+                mainChain[idx][pos] = currentPalette;
+            }
+            renderBuilder();
+        }
+
+        function resetBuilder() {
+            mainChain = [
+                { top: null, bottom: null },
+                { top: null, bottom: null },
+                { top: null, bottom: null },
+                { top: null, bottom: null }
+            ];
+            renderBuilder();
+        }
+
+        const subBadgeStyles = {
+            'CH3': { text: 'CH₃', bg: 'bg-amber-500 hover:bg-amber-400 text-slate-950 border-amber-300' },
+            'C2H5': { text: 'C₂H₅', bg: 'bg-orange-500 hover:bg-orange-400 text-slate-950 border-orange-300' },
+            'Cl': { text: 'Cl', bg: 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 border-emerald-300' },
+            'Br': { text: 'Br', bg: 'bg-rose-600 hover:bg-rose-500 text-white border-rose-400' },
+            'F': { text: 'F', bg: 'bg-cyan-400 hover:bg-cyan-300 text-slate-950 border-cyan-200' },
+            'I': { text: 'I', bg: 'bg-purple-500 hover:bg-purple-400 text-white border-purple-300' }
+        };
+
+        function renderBuilder() {
+            const canvas = document.getElementById('builder-canvas');
+            canvas.innerHTML = '';
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'flex items-center space-x-1 select-none';
+
+            mainChain.forEach((c, idx) => {
+                const isEnd = (idx === 0 || idx === mainChain.length - 1);
+                
+                const col = document.createElement('div');
+                col.className = 'flex flex-col items-center relative';
+
+                // TOP SLOT
+                const topSlot = document.createElement('div');
+                topSlot.className = 'h-14 flex flex-col items-center justify-end';
+
+                if (c.top) {
+                    const sty = subBadgeStyles[c.top] || { text: c.top, bg: 'bg-slate-700 text-white' };
+                    topSlot.innerHTML = `
+                        <div onclick="applySubstituent(${idx}, 'top')" class="cursor-pointer font-mono font-bold text-xs px-2 py-1 rounded shadow border transition flex items-center gap-1 ${sty.bg}">
+                            <span>${sty.text}</span>
+                            <i class="fa-solid fa-xmark text-[10px]"></i>
+                        </div>
+                        <div class="w-0.5 h-2 bg-indigo-400"></div>
+                    `;
+                } else {
+                    topSlot.innerHTML = `
+                        <button onclick="applySubstituent(${idx}, 'top')" class="opacity-40 hover:opacity-100 text-slate-400 hover:text-amber-400 text-[10px] border border-dashed border-slate-600 hover:border-amber-400 px-1.5 py-0.5 rounded transition">
+                            +
+                        </button>
+                    `;
+                }
+                col.appendChild(topSlot);
+
+                // MAIN C NODE
+                const hasSubs = (c.top || c.bottom);
+                const node = document.createElement('div');
+                node.className = `w-12 h-12 rounded-full font-mono font-bold flex items-center justify-center text-white text-sm shadow-md transition transform hover:scale-105 ${hasSubs ? 'bg-slate-800 border-2 border-amber-400 text-amber-300' : 'bg-slate-800 border-2 border-indigo-400'}`;
+                node.textContent = `C${idx + 1}`;
+                col.appendChild(node);
+
+                // BOTTOM SLOT
+                const botSlot = document.createElement('div');
+                botSlot.className = 'h-14 flex flex-col items-center justify-start';
+
+                if (c.bottom) {
+                    const sty = subBadgeStyles[c.bottom] || { text: c.bottom, bg: 'bg-slate-700 text-white' };
+                    botSlot.innerHTML = `
+                        <div class="w-0.5 h-2 bg-indigo-400"></div>
+                        <div onclick="applySubstituent(${idx}, 'bottom')" class="cursor-pointer font-mono font-bold text-xs px-2 py-1 rounded shadow border transition flex items-center gap-1 ${sty.bg}">
+                            <span>${sty.text}</span>
+                            <i class="fa-solid fa-xmark text-[10px]"></i>
+                        </div>
+                    `;
+                } else {
+                    botSlot.innerHTML = `
+                        <button onclick="applySubstituent(${idx}, 'bottom')" class="opacity-40 hover:opacity-100 text-slate-400 hover:text-amber-400 text-[10px] border border-dashed border-slate-600 hover:border-amber-400 px-1.5 py-0.5 rounded transition mt-1">
+                            +
+                        </button>
+                    `;
+                }
+                col.appendChild(botSlot);
+
+                // Hydrogen Count
+                let bonds = 0;
+                if (mainChain.length > 1) {
+                    if (isEnd) bonds += 1;
+                    else bonds += 2;
+                }
+                if (c.top) bonds++;
+                if (c.bottom) bonds++;
+                let hCount = Math.max(0, 4 - bonds);
+
+                const hTag = document.createElement('div');
+                hTag.className = 'text-[11px] font-mono font-bold text-sky-400 mt-0.5';
+                hTag.textContent = `H${hCount > 0 ? (hCount > 1 ? hCount : '') : '₀'}`;
+                col.appendChild(hTag);
+
+                wrapper.appendChild(col);
+
+                // Inter-carbon bond
+                if (idx < mainChain.length - 1) {
+                    const bond = document.createElement('div');
+                    bond.className = 'w-6 h-1 bg-indigo-400 my-auto rounded';
+                    wrapper.appendChild(bond);
+                }
+            });
+
+            canvas.appendChild(wrapper);
+
+            // Calculate Counts & Formulas
+            updateBuilderFormulas();
+        }
+
+        function updateBuilderFormulas() {
+            let nC = mainChain.length;
+            let nH = 0;
+            let nCl = 0, nBr = 0, nF = 0, nI = 0;
+
+            mainChain.forEach((c, idx) => {
+                const isEnd = (idx === 0 || idx === mainChain.length - 1);
+                let bonds = 0;
+                if (mainChain.length > 1) {
+                    if (isEnd) bonds += 1;
+                    else bonds += 2;
+                }
+                if (c.top) bonds++;
+                if (c.bottom) bonds++;
+                nH += Math.max(0, 4 - bonds);
+
+                [c.top, c.bottom].forEach(sub => {
+                    if (sub === 'CH3') { nC += 1; nH += 3; }
+                    else if (sub === 'C2H5') { nC += 2; nH += 5; }
+                    else if (sub === 'Cl') nCl++;
+                    else if (sub === 'Br') nBr++;
+                    else if (sub === 'F') nF++;
+                    else if (sub === 'I') nI++;
+                });
+            });
+
+            // Molecular formula formatting (Hill system: C, H, then halogens alphabetically)
+            let mol = `C<sub>${nC}</sub>H<sub>${nH}</sub>`;
+            if (nBr > 0) mol += `Br${nBr > 1 ? `<sub>${nBr}</sub>` : ''}`;
+            if (nCl > 0) mol += `Cl${nCl > 1 ? `<sub>${nCl}</sub>` : ''}`;
+            if (nF > 0) mol += `F${nF > 1 ? `<sub>${nF}</sub>` : ''}`;
+            if (nI > 0) mol += `I${nI > 1 ? `<sub>${nI}</sub>` : ''}`;
+            document.getElementById('out-mol-formula').innerHTML = mol;
+
+            // Condensed Formula
+            const cond = mainChain.map((c, idx) => {
+                const isEnd = (idx === 0 || idx === mainChain.length - 1);
+                let bonds = (mainChain.length === 1 ? 0 : (isEnd ? 1 : 2));
+                if (c.top) bonds++;
+                if (c.bottom) bonds++;
+                const h = Math.max(0, 4 - bonds);
+                const hStr = h === 0 ? '' : (h === 1 ? 'H' : `H${h}`);
+
+                let subs = [];
+                if (c.top) subs.push(c.top);
+                if (c.bottom) subs.push(c.bottom);
+
+                if (subs.length === 0) return `C${hStr}`;
+                const subStr = subs.map(s => `(${s})`).join('');
+                return `C${hStr}${subStr}`;
+            }).join('—');
+
+            document.getElementById('out-cond-formula').textContent = cond;
+
+            // IUPAC Name
+            document.getElementById('out-iupac-name').textContent = calcIUPACAdvanced(mainChain);
+        }
+
+        /* Advanced IUPAC Nomenclature for Alkanes with Halogens and Alkyls */
+        function calcIUPACAdvanced(chain) {
+            const names = {
+                1: 'მეთანი', 2: 'ეთანი', 3: 'პროპანი', 4: 'ბუტანი',
+                5: 'პენტანი', 6: 'ჰექსანი', 7: 'ჰეპტანი', 8: 'ოქტანი',
+                9: 'ნონანი', 10: 'დეკანი'
+            };
+
+            const len = chain.length;
+            const subsList = []; // { pos, type }
+
+            chain.forEach((c, idx) => {
+                const pos = idx + 1;
+                if (c.top) subsList.push({ pos, type: c.top });
+                if (c.bottom) subsList.push({ pos, type: c.bottom });
+            });
+
+            if (subsList.length === 0) {
+                return names[len] || 'ალკანი';
+            }
+
+            // Direction test (Lowest locant rule)
+            const forwardLocs = subsList.map(s => s.pos).sort((a,b) => a - b);
+            const reverseLocs = subsList.map(s => len - s.pos + 1).sort((a,b) => a - b);
+
+            let isReverse = false;
+            for (let i = 0; i < forwardLocs.length; i++) {
+                if (reverseLocs[i] < forwardLocs[i]) { isReverse = true; break; }
+                if (forwardLocs[i] < reverseLocs[i]) { isReverse = false; break; }
+            }
+
+            // Standardize positions based on winner direction
+            const resolvedSubs = subsList.map(s => ({
+                pos: isReverse ? (len - s.pos + 1) : s.pos,
+                type: s.type
+            }));
+
+            // Group by type
+            const groups = {
+                'Br': { name: 'ბრომ', locs: [] },
+                'C2H5': { name: 'ეთილ', locs: [] },
+                'I': { name: 'იოდ', locs: [] },
+                'CH3': { name: 'მეთილ', locs: [] },
+                'F': { name: 'ფტორ', locs: [] },
+                'Cl': { name: 'ქლორ', locs: [] }
+            };
+
+            resolvedSubs.forEach(s => {
+                if (groups[s.type]) groups[s.type].locs.push(s.pos);
+            });
+
+            const multiPrefixes = { 1: '', 2: 'დი', 3: 'ტრი', 4: 'ტეტრა', 5: 'პენტა' };
+
+            // Alphabetical IUPAC order in Georgian (ბრომ, ეთილ, იოდ, მეთილ, ფტორ, ქლორ)
+            const order = ['Br', 'C2H5', 'I', 'CH3', 'F', 'Cl'];
+            const prefixParts = [];
+
+            order.forEach(typeKey => {
+                const g = groups[typeKey];
+                if (g.locs.length > 0) {
+                    g.locs.sort((a,b) => a - b);
+                    const p = multiPrefixes[g.locs.length] || '';
+                    prefixParts.push(`${g.locs.join(',')}-${p}${g.name}`);
+                }
+            });
+
+            const baseName = names[len] || 'ალკანი';
+            return prefixParts.join('-') + baseName;
+        }
+
+        /* ================= MODULE 7: 12 COMPREHENSIVE QUIZ QUESTIONS ================= */
+        const questions = [
+            {
+                q: "1. რამდენი ვალენტური ბმა აქვს ნახშირბადს (C) ორგანულ ნაერთებში?",
+                opts: ["2", "3", "4", "5"],
+                ans: 2,
+                explain: "ორგანულ ნაერთებში ნახშირბადი ყოველთვის ოთხვალენტიანია (IV) და წარმოქმნის ზუსტად 4 კოვალენტურ ბმას."
+            },
+            {
+                q: "2. როგორია ალკანების (ნაგერი ნახშირწყალბადების) ზოგადი მოლეკულური ფორმულა?",
+                opts: ["CₙH₂ₙ", "CₙH₂ₙ₊₂", "CₙH₂ₙ₋₂", "CₙHₙ"],
+                ans: 1,
+                explain: "ალკანების ზოგადი ფორმულაა CₙH₂ₙ₊₂, სადაც n არის ნახშირბადის ატომების რიცხვი."
+            },
+            {
+                q: "3. რა ეწოდება რადიკალს ფორმულით —C₂H₅ ?",
+                opts: ["მეთილი", "ეთილი", "პროპილი", "ბუტილი"],
+                ans: 1,
+                explain: "ეთანიდან (C₂H₆) ერთი წყალბადის მოხლეჩით მიიღება ეთილის რადიკალი: —C₂H₅ (ან —CH₂—CH₃)."
+            },
+            {
+                q: "4. რა ეწოდება ნაერთს IUPAC ნომენკლატურით: CH₃—CH(Cl)—CH₂—CH₃ ?",
+                opts: ["2-ქლორბუტანი", "3-ქლორბუტანი", "2-ქლორპროპანი", "ქლორბუტანი"],
+                ans: 0,
+                explain: "მთავარი ჯაჭვია 4 C (ბუტანი), ქლორი მე-2 ნახშირბადზეა → 2-ქლორბუტანი."
+            },
+            {
+                q: "5. რა ეწოდება ნაერთს: CH₃—CH₂—CH(C₂H₅)—CH₂—CH₃ ?",
+                opts: ["3-მეთილჰექსანი", "3-ეთილპენტანი", "2-ეთილპენტანი", "ჰეპტანი"],
+                ans: 1,
+                explain: "მთავარ ჯაჭვშია 5 C (პროპანი/პენტანი), მე-3 ნახშირბადზე ებმის ეთილის რადიკალი → 3-ეთილპენტანი."
+            },
+            {
+                q: "6. რა ეწოდება ნაერთს: CH₃—C(Br)(CH₃)—CH₃ ?",
+                opts: ["2-ბრომპროპანი", "2-ბრომ-2-მეთილპროპანი", "ბრომბუტანი", "2-მეთილბრომპროპანი"],
+                ans: 1,
+                explain: "მთავარ ჯაჭვშია 3 C (პროპანი), C₂-ზე არის ბრომიც და მეთილიც → 2-ბრომ-2-მეთილპროპანი."
+            },
+            {
+                q: "7. რამდენი სტრუქტურული იზომერი აქვს პენტანს (C₅H₁₂)?",
+                opts: ["2", "3", "4", "5"],
+                ans: 1,
+                explain: "პენტანს აქვს 3 იზომერი: ნ-პენტანი, 2-მეთილბუტანი (იზოპენტანი) და 2,2-დიმეთილპროპანი (ნეოპენტანი)."
+            },
+            {
+                q: "8. პროპანის მოლეკულაში (CH₃—CH₂—CH₃) რამდენი წყალბადი უკავშირდება შუა ნახშირბადს?",
+                opts: ["1", "2", "3", "4"],
+                ans: 1,
+                explain: "შუა ნახშირბადს აქვს ორი C—C ბმა, ამიტომ 4-მდე დასაკმაყოფილებლად ემატება ზუსტად 2 წყალბადი (—CH₂—)."
+            },
+            {
+                q: "9. რა ეწოდება ნაერთს: CH₃—C(Cl)₂—CH₃ ?",
+                opts: ["2-ქლორპროპანი", "2,2-დიქლორპროპანი", "1,2-დიქლორპროპანი", "დიქლორბუტანი"],
+                ans: 1,
+                explain: "მე-2 ნახშირბადზე ორი ქლორის ატომია → 2,2-დიქლორპროპანი."
+            },
+            {
+                q: "10. რამდენი წყალბადის (H) ატომია ალკანში, რომელსაც აქვს 7 ნახშირბადის ატომი?",
+                opts: ["14", "15", "16", "18"],
+                ans: 2,
+                explain: "ფორმულით 2n + 2 = 2×7 + 2 = 16 წყალბადი (ჰეპტანი C₇H₁₆)."
+            },
+            {
+                q: "11. რამდენი კოვალენტური ბმა შეუძლია წარმოქმნას ჰალოგენის (F, Cl, Br, I) ატომმა ორგანულ ნაერთში?",
+                opts: ["1", "2", "3", "4"],
+                ans: 0,
+                explain: "ჰალოგენები ორგანულ ნაერთებში ერთვალენტიანები არიან და 1 წყალბადის ატომის მსგავსად წარმოქმნიან 1 კოვალენტურ ბმას."
+            },
+            {
+                q: "12. რა ეწოდება ნაერთს: CH₃—CH(CH₃)—CH(CH₃)—CH₃ ?",
+                opts: ["2,3-დიმეთილბუტანი", "2,2-დიმეთილბუტანი", "2-მეთილპენტანი", "ჰექსანი"],
+                ans: 0,
+                explain: "მთავარ ჯაჭვშია 4 C (ბუტანი), მე-2 და მე-3 ნახშირბადზე ებმის მეთილის ჯგუფები → 2,3-დიმეთილბუტანი."
+            }
+        ];
+
+        let quizUserAns = {};
+
+        function initQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+            quizUserAns = {};
+
+            questions.forEach((q, qIdx) => {
+                const card = document.createElement('div');
+                card.className = 'border border-slate-200 rounded-xl p-5 bg-slate-50 space-y-3';
+                card.id = `q-card-${qIdx}`;
+
+                let optsHTML = q.opts.map((opt, oIdx) => `
+                    <label onclick="selectQuizAnswer(${qIdx}, ${oIdx})" class="quiz-opt-lbl-${qIdx} flex items-center space-x-3 p-3 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-indigo-50 transition">
+                        <input type="radio" name="q_${qIdx}" value="${oIdx}" class="text-indigo-600 focus:ring-indigo-500">
+                        <span class="text-xs sm:text-sm font-medium text-slate-700">${opt}</span>
+                    </label>
+                `).join('');
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <h4 class="font-bold text-slate-800 text-sm leading-snug">${q.q}</h4>
+                        <span class="text-[10px] font-bold text-slate-400 bg-slate-200 px-2 py-0.5 rounded">#${qIdx+1}</span>
+                    </div>
+                    <div class="space-y-2">${optsHTML}</div>
+                    <div id="q-explain-${qIdx}" class="text-xs p-3 rounded-lg hidden font-medium"></div>
+                `;
+                container.appendChild(card);
+            });
+
+            const submitBtn = document.createElement('button');
+            submitBtn.className = 'w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl transition shadow-lg text-sm sm:text-base flex items-center justify-center gap-2';
+            submitBtn.innerHTML = '<i class="fa-solid fa-square-check"></i> შედეგების შემოწმება & შეფასება';
+            submitBtn.onclick = checkQuiz;
+            container.appendChild(submitBtn);
+        }
+
+        function selectQuizAnswer(qIdx, oIdx) {
+            quizUserAns[qIdx] = oIdx;
+        }
+
+        function checkQuiz() {
+            let score = 0;
+            questions.forEach((q, idx) => {
+                const userChoice = quizUserAns[idx];
+                const expBox = document.getElementById(`q-explain-${idx}`);
+                const isCorrect = (userChoice === q.ans);
+
+                if (isCorrect) score++;
+
+                expBox.classList.remove('hidden');
+                if (isCorrect) {
+                    expBox.className = 'text-xs p-3 rounded-lg font-medium bg-emerald-100 text-emerald-900 border border-emerald-300 block';
+                    expBox.innerHTML = `<strong><i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> სწორია!</strong> ${q.explain}`;
+                } else {
+                    expBox.className = 'text-xs p-3 rounded-lg font-medium bg-rose-100 text-rose-900 border border-rose-300 block';
+                    expBox.innerHTML = `<strong><i class="fa-solid fa-circle-xmark text-rose-600 mr-1"></i> არასწორია.</strong> სწორი პასუხია: <strong>${q.opts[q.ans]}</strong>.<br>${q.explain}`;
+                }
+            });
+
+            const percent = Math.round((score / questions.length) * 100);
+            let praise = "სცადეთ თავიდან!";
+            if (percent === 100) praise = "ბრწყინვალეა! უმაღლესი ქულა! 🎉";
+            else if (percent >= 75) praise = "ძალიან კარგი შედეგია! ყოჩაღ!";
+            else if (percent >= 50) praise = "კარგია, მაგრამ გადახედეთ შეცდომებს!";
+
+            const banner = document.createElement('div');
+            banner.className = 'p-6 bg-indigo-900 text-white rounded-2xl text-center space-y-3 mb-6 shadow-xl animate-fade-in';
+            banner.innerHTML = `
+                <div class="w-16 h-16 bg-emerald-500 text-white font-extrabold text-2xl rounded-full flex items-center justify-center mx-auto shadow-lg">
+                    ${score}/${questions.length}
+                </div>
+                <h3 class="text-xl font-bold">${praise}</h3>
+                <p class="text-xs text-indigo-200">თქვენ სწორად უპასუხეთ 12-დან ${score} შეკითხვას (${percent}%).</p>
+                <button onclick="initQuiz()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs px-5 py-2 rounded-lg transition shadow">
+                    ქვიზის თავიდან გავლა
+                </button>
+            `;
+
+            const container = document.getElementById('quiz-container');
+            container.insertBefore(banner, container.firstChild);
+            banner.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Initialize default view
+        window.addEventListener('DOMContentLoaded', () => {
+            setHExample('propane');
+            setNomenclatureExample(0);
+            nextPracticeTask();
+            renderBuilder();
+        });
+    </script>
+</body>
+</html>
